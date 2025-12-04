@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Uni Servive Admin",
+  title: "Uni Service Admin",
   description: "Admin dashboard for uni-service",
 };
 
