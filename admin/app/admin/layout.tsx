@@ -104,7 +104,7 @@ export default function RootLayout({
         </nav>
 
         {/* Page content here */}
-        <div className="p-4">{children}</div>
+        <div className="p-4 lg:px-8">{children}</div>
       </div>
 
       <div className="drawer-side is-drawer-close:overflow-visible">
