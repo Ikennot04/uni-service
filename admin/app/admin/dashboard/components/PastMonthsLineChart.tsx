@@ -23,13 +23,13 @@ ChartJs.register(
   Legend
 );
 
-export default function ThisMonthLineChart() {
+export default function PastMonthsLineChart() {
   const lineChartData = {
-    labels: ['Nov 29', 'Dec 6', 'Dec 13', 'Dec 20', 'Dec 27', 'Jan 3', 'Jan 10'],
+    labels: ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     datasets: [
       {
         label: "Appointments",
-        data: [311, 232, 263, 214, 521, 231, 424],
+        data: [311, 232, 263, 214, 521, 231],
         borderColor: "#00CAFF",
         backgroundColor: "rgba(59, 130, 246, 0.1)",
         fill: true,
@@ -44,7 +44,7 @@ export default function ThisMonthLineChart() {
       },
       {
         label: "Orders",
-        data: [332, 504, 167, 342, 103, 93, 236],
+        data: [332, 504, 167, 342, 103, 93],
         borderColor: "#C6D870",
         backgroundColor: "rgba(16, 185, 129, 0.1)",
         fill: true,
@@ -89,7 +89,7 @@ export default function ThisMonthLineChart() {
       },
       title: {
         display: true,
-        text: "Appointments & Orders This Past Weeks",
+        text: "Appointments & Orders This Past Months",
         font: {
           size: 16,
           weight: "bold" as const,
