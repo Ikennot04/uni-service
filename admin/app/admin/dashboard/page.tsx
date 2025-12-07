@@ -4,6 +4,7 @@ import ThisWeekLineChart from "./components/ThisWeekLineChart";
 import RecentActivitiesList from "./components/RecentActivitiesList";
 import StatCards from "./components/StatCards";
 import PastMonthsLineChart from "./components/PastMonthsLineChart";
+import TopServiceBarChart from "./components/TopServiceBarChart";
 
 export default function DashboardPage() {
   return (
@@ -46,9 +47,9 @@ export default function DashboardPage() {
         <PastMonthsLineChart />
       </div>
 
-      <div className="grid grid-cols-2 gap-3 mt-7">
+      <div className="grid grid-cols-2 gap-3 my-7">
         <div className="border-2 border-base-300 h-112 rounded-lg overflow-auto">
-          
+          <TopServiceBarChart />
         </div>
         <div className="border-2 border-base-300 h-112 rounded-lg overflow-auto"></div>
       </div>
