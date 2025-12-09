@@ -7,8 +7,9 @@ interface Drone {
   name: string;
   model: string;
   serialNumber: string;
-  status: "Active" | "Inactive" | "Maintenance";
+  status: "Active" | "Inactive" | "Maintenance" | "Delivering";
   batteryHealth: number;
+  loadCapacity: number;
   lastMaintenance: string;
   registrationDate: string;
 }
@@ -17,10 +18,11 @@ const mockDrones: Drone[] = [
   {
     id: 1,
     name: "Sky Courier 1",
-    model: "DC-500",
+    model: "DC-5000",
     serialNumber: "SN-001",
-    status: "Active",
-    batteryHealth: 95,
+    status: "Delivering",
+    batteryHealth: 75,
+    loadCapacity: 5,
     lastMaintenance: "2024-11-15",
     registrationDate: "2024-01-10",
   },
@@ -31,6 +33,7 @@ const mockDrones: Drone[] = [
     serialNumber: "SN-002",
     status: "Active",
     batteryHealth: 88,
+    loadCapacity: 3,
     lastMaintenance: "2024-10-20",
     registrationDate: "2024-01-15",
   },
@@ -41,6 +44,7 @@ const mockDrones: Drone[] = [
     serialNumber: "SN-003",
     status: "Maintenance",
     batteryHealth: 45,
+    loadCapacity: 2.5,
     lastMaintenance: "2024-12-01",
     registrationDate: "2024-02-05",
   },
@@ -51,6 +55,7 @@ const mockDrones: Drone[] = [
     serialNumber: "SN-004",
     status: "Active",
     batteryHealth: 92,
+    loadCapacity: 8,
     lastMaintenance: "2024-11-10",
     registrationDate: "2024-03-01",
   },
@@ -61,6 +66,7 @@ const mockDrones: Drone[] = [
     serialNumber: "SN-005",
     status: "Inactive",
     batteryHealth: 30,
+    loadCapacity: 3,
     lastMaintenance: "2024-08-15",
     registrationDate: "2024-04-12",
   },
@@ -71,6 +77,7 @@ const mockDrones: Drone[] = [
     serialNumber: "SN-006",
     status: "Active",
     batteryHealth: 85,
+    loadCapacity: 2.5,
     lastMaintenance: "2024-11-20",
     registrationDate: "2024-02-20",
   },
@@ -81,6 +88,7 @@ const mockDrones: Drone[] = [
     serialNumber: "SN-007",
     status: "Active",
     batteryHealth: 98,
+    loadCapacity: 8,
     lastMaintenance: "2024-11-25",
     registrationDate: "2024-05-10",
   },
@@ -91,12 +99,16 @@ const mockDrones: Drone[] = [
     serialNumber: "SN-008",
     status: "Maintenance",
     batteryHealth: 55,
+    loadCapacity: 3,
     lastMaintenance: "2024-12-05",
     registrationDate: "2024-03-18",
   },
 ];
 
-const DRONE_MODELS = ["DC-400", "DC-500", "DC-600"];
+const models = [
+  'All',
+  ...new Set(mockDrones.map((drone) => drone.model)),
+]
 
 export default function DronesPage() {
   const [drones, setDrones] = useState<Drone[]>(mockDrones);
@@ -105,11 +117,6 @@ export default function DronesPage() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    model: "DC-500",
-    serialNumber: "",
-  });
 
   const filteredDrones = useMemo(() => {
     return drones.filter((drone) => {
@@ -145,23 +152,6 @@ export default function DronesPage() {
     setCurrentPage(1);
   };
 
-  const handleAddDrone = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newDrone: Drone = {
-      id: Math.max(...drones.map((d) => d.id), 0) + 1,
-      name: `Drone-${formData.serialNumber}`,
-      model: formData.model,
-      serialNumber: formData.serialNumber,
-      status: "Active",
-      batteryHealth: 100,
-      lastMaintenance: new Date().toISOString().split("T")[0],
-      registrationDate: new Date().toISOString().split("T")[0],
-    };
-    setDrones([...drones, newDrone]);
-    setFormData({ model: "DC-500", serialNumber: "" });
-    setIsModalOpen(false);
-  };
-
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
       case "Active":
@@ -170,6 +160,8 @@ export default function DronesPage() {
         return "badge badge-error text-[13px]";
       case "Maintenance":
         return "badge badge-warning text-[13px]";
+      case "Delivering":
+        return "badge badge-info text-[13px]";
       default:
         return "badge";
     }
@@ -187,12 +179,7 @@ export default function DronesPage() {
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-bold">Drones Management</h1>
-          <button
-            className="btn btn-primary"
-            onClick={() => setIsModalOpen(true)}
-          >
-            + Add Drone
-          </button>
+          <button className="btn bg-black text-white">+ Add Drone</button>
         </div>
         <p className="text-gray-600">
           Total Drones: {filteredDrones.length} of {drones.length}
@@ -226,8 +213,7 @@ export default function DronesPage() {
               value={modelFilter}
               onChange={(e) => setModelFilter(e.target.value)}
             >
-              <option>All</option>
-              {DRONE_MODELS.map((model) => (
+              {models.map((model) => (
                 <option key={model} value={model}>
                   {model}
                 </option>
@@ -249,6 +235,7 @@ export default function DronesPage() {
               <option>Active</option>
               <option>Inactive</option>
               <option>Maintenance</option>
+              <option>Delivering</option>
             </select>
           </div>
         </div>
@@ -264,6 +251,7 @@ export default function DronesPage() {
                 <th className="font-bold">Model</th>
                 <th className="font-bold">Serial Number</th>
                 <th className="font-bold">Status</th>
+                <th className="font-bold">Load Capacity</th>
                 <th className="font-bold">Battery Health</th>
                 <th className="font-bold">Last Maintenance</th>
                 <th className="font-bold">Registration Date</th>
@@ -282,6 +270,7 @@ export default function DronesPage() {
                         {drone.status}
                       </span>
                     </td>
+                    <td className="font-semibold">{drone.loadCapacity} kg</td>
                     <td>
                       <div className="flex items-center gap-2">
                         <div className="w-12 bg-gray-200 rounded-full h-2">
@@ -290,8 +279,8 @@ export default function DronesPage() {
                               drone.batteryHealth >= 80
                                 ? "bg-success"
                                 : drone.batteryHealth >= 50
-                                  ? "bg-warning"
-                                  : "bg-error"
+                                ? "bg-warning"
+                                : "bg-error"
                             }`}
                             style={{
                               width: `${drone.batteryHealth}%`,
@@ -299,7 +288,9 @@ export default function DronesPage() {
                           ></div>
                         </div>
                         <span
-                          className={`font-semibold ${getBatteryHealthColor(drone.batteryHealth)}`}
+                          className={`font-semibold ${getBatteryHealthColor(
+                            drone.batteryHealth
+                          )}`}
                         >
                           {drone.batteryHealth}%
                         </span>
@@ -318,7 +309,7 @@ export default function DronesPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={8} className="text-center py-4 text-gray-500">
+                  <td colSpan={9} className="text-center py-4 text-gray-500">
                     No drones found
                   </td>
                 </tr>
@@ -380,65 +371,6 @@ export default function DronesPage() {
           </button>
         </div>
       </div>
-
-      {/* Add Drone Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-base-100 rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-2xl font-bold mb-4">Add New Drone</h2>
-            <form onSubmit={handleAddDrone} className="space-y-4">
-              <div>
-                <label className="label">
-                  <span className="label-text font-semibold">Model</span>
-                </label>
-                <select
-                  className="select select-bordered w-full"
-                  value={formData.model}
-                  onChange={(e) =>
-                    setFormData({ ...formData, model: e.target.value })
-                  }
-                >
-                  {DRONE_MODELS.map((model) => (
-                    <option key={model} value={model}>
-                      {model}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="label">
-                  <span className="label-text font-semibold">Serial Number</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g., SN-009"
-                  className="input input-bordered w-full"
-                  value={formData.serialNumber}
-                  onChange={(e) =>
-                    setFormData({ ...formData, serialNumber: e.target.value })
-                  }
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-1">Drone name will be auto-generated based on serial number</p>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="button"
-                  className="btn btn-ghost flex-1"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary flex-1">
-                  Add Drone
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
