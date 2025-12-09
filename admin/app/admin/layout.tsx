@@ -74,11 +74,6 @@ const routes = [
     icon: <GrDocumentUser className="text-[1.35rem]" />,
   },
   {
-    name: "Notifications",
-    href: "/admin/notifications",
-    icon: <FaRegBell className="text-[1.35rem]" />,
-  },
-  {
     name: "Settings",
     href: "/admin/settings",
     icon: <PiGear className="text-[1.35rem]" />,
