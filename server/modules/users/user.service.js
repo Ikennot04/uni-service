@@ -1,6 +1,7 @@
 import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import fs from "fs";
 
 import User from "./user.model.js"; // Import User Model
 
@@ -13,12 +14,17 @@ export const UserService = {
   },
 
   // CREATE USER =================================================================
-  async createUser(data) {
+  async createUser(data, userImage) {
+    const img_path = "images/users/" + userImage;
+    console.log(img_path);
+
     // Validations
     if (!validator.isEmail(data.email)) {
+      fs.unlink(img_path, (err) => console.log(err));
       throw Error("Invalid Email Format");
     }
     if (!validator.isStrongPassword(data.password)) {
+      fs.unlink(img_path, (err) => console.log(err));
       throw Error(
         "Password must contains one capital letter and one special character"
       );
@@ -56,7 +62,9 @@ export const UserService = {
 
   // GET ALL USERS ================================================================
   async getAllUsers() {
-    const users = await User.find({role: {$in: ['user', 'service_provider']}});
+    const users = await User.find({
+      role: { $in: ["user", "service_provider"] },
+    });
     return users;
   },
 
@@ -64,7 +72,8 @@ export const UserService = {
   async getUserById(user_id) {
     const user = await User.findById(user_id);
     return user;
-  }
+  },
 
-  
+  // UPDATE USER BY ID ==============================================================
+  async updateUserById(user_id, data) {},
 };
