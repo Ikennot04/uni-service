@@ -15,6 +15,9 @@ mongoose.connect(_dbURI).then(() => {
   console.log("Connected to Mongo DB");
 });
 
+// Image static folder
+app.use("/images", express.static("images"));
+
 // Routes
 app.use("/api/users", user);
 
