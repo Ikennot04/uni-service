@@ -14,8 +14,8 @@ const router = express.Router();
 router.post("/signup", upload.single("image"), createUser);
 router.post("/signin", signinUser);
 
-router.get("/", getAllUsers);
-router.get("/:id", getUserById);
-router.patch("/:id", upload.single("image"), updateUserById);
+router.get("/", getAllUsers); // Admin only
+router.get("/:id", getUserById); // Admin and user
+router.patch("/:id", upload.single("image"), updateUserById); // Admin and user
 
 export default router;
