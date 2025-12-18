@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 
 // Import routes
 import user from "./modules/users/user.route.js";
+import service from "./modules/services/service.route.js";
 
 dotenv.config();
 const app = express();
@@ -20,6 +21,7 @@ app.use("/images", express.static("images"));
 
 // Routes
 app.use("/api/users", user);
+app.use("/api/services", service);
 
 // Local Server
 app.listen(process.env.PORT, () =>
