@@ -113,4 +113,14 @@ export const UserService = {
 
     return response;
   },
+
+  // UPDATE USER STATUS BY ID =======================================================
+  async updateUserStatusById(user_id, status) {
+    const response = await User.findByIdAndUpdate(
+      user_id,
+      { status },
+      {new: true, runValidators: true }
+    );
+    return response;
+  },
 };

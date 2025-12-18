@@ -51,3 +51,15 @@ export const updateUserById = async (req, res) => {
     res.status(400).json({ success: false, message: error.message });
   }
 };
+
+export const updateUserStatusById = async (req, res) => {
+  const id = req.params.id;
+  const { status } = req.body;
+
+  try {
+    const updatedUser = await UserService.updateUserStatusById(id, status);
+    res.status(200).json({ success: true, data: updatedUser });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
